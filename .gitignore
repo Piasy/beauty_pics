@@ -1,3 +1,7 @@
+imgs/*
+tags
+test.rb
+
 *.gem
 *.rbc
 /.config

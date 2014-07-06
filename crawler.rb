@@ -1,14 +1,16 @@
-#/usr/bin/ruby
+#!/usr/bin/ruby
 require 'open-uri'
 require 'net/http'
 require 'fileutils'
 require 'thread'
-require 'nokogiri'
+#require 'nokogiri'
 require 'mongo'
+require 'hpricot'
 
 
 class Crawler
   @@interval = 2
+  @@rootpath = "imgs/"
 
   def initialize(seeds, threadNum)
     @tasks = Queue.new
@@ -34,23 +36,33 @@ class Crawler
     pwd = url[0..url.rindex("/")]   #with last /
     root = /http:\/\/\S+?\//.match(url).to_s
     root = root[0..root.length - 2]   #without last /
+    if root == nil || root.length < 7
+      return {
+        "title" => "NONE",
+        "links" => [],
+        "imgs" => []
+      }
+    end
     ret = {}
 
     page = open(url, @proxy)
-    content = page.read
+    #page = open(url)
+    content = page.read#.encode("UTF-8")
     #ret["content"] = content
 
-    doc = Nokogiri::HTML::Document.parse(content)
-    ret["title"] = doc.css("title").text
+    #doc = Nokogiri::HTML::Document.parse(content)
+    doc = Hpricot(content)
+    ret["title"] = doc.at("title").inner_html    #doc.css("title").text
 
     retLinks = []
-    links = doc.css("a")
+    links = doc.search("/html/body//a")    #doc.css("a")
     links.each {|link|
-      href = link["href"]
+      #href = link["href"]
+      href = link.attributes["href"]
       if href == nil
         next
       end
-      if href.start_with?("http://")
+      if href.start_with?("http://") || href.start_with?("https://")
         if href.start_with?(root)
           retLinks << href
         end
@@ -86,7 +98,7 @@ class Crawler
   end
 
   def urlMarkdown(url)
-    #puts "add url: #{url}"
+    puts "add url: #{url}"
     @finished[url] = true
   end
 
@@ -130,33 +142,49 @@ class Crawler
             res = fetch(tt[0], tt[1])
             #puts res["title"]
             urlMarkdown(tt[0])
-           
+
             res["links"].each {|link|
               if urlFetched(link)
                 next
               end
-           
+
               @tasks << [link, tt[1]]
             }
-           
+
             res["imgs"].each {|img|
+              img.encode!("UTF-8")
               if picFetched(img)
                 next
               end
-           
+
               uri = URI.parse(img)
               dd = /(.*\/)(.*)/.match(uri.path)
-              #puts @pwd + "/" + uri.host + dd[1]
-              picMarkdown(img, uri.host + uri.path, res["title"])
-              FileUtils::mkdir_p(@pwd + "/" + uri.host + dd[1])
-              open(@pwd + "/" + uri.host + uri.path, 'wb') {|file| file << open(img, @proxy).read}
-              puts "save pic #{img} by thread #{id}"
+              #puts "img: #{img}"
+              #puts img.encoding
+              dirs = (@pwd + "/" + @@rootpath + uri.host + dd[1]).encode!("UTF-8")
+              relativepath = (@@rootpath + uri.host + uri.path).encode!("UTF-8")
+              #puts "dirs: #{dirs}"
+              #puts dirs.encoding
+              #puts "relative: #{relativepath}"
+              #puts relativepath.encoding
+              picMarkdown(img, relativepath, res["title"])
+              FileUtils::mkdir_p(dirs)
+              #puts "mkdir ok"
+              open(img, @proxy) {|pic|
+                open(@pwd + "/" + relativepath, 'wb') {|file| file << pic.read}
+              }
+              #open(@pwd + "/" + relativepath, 'wb') {|file| file << open(img, @proxy).read}
+              #open(@pwd + "/" + relativepath, 'wb') {|file| file << open(img).read}
+              puts "save #{count} pic #{img} by thread #{id}"
               sleep(@@interval)
-           
+
               count += 1
             }
-          rescue
-            puts "Exception: #{$1}"
+          rescue Exception => msg
+            puts "Exception: #{msg} @ #{$1}"
+            if $1 != nil
+              puts $1.encoding
+            end
           end
 
           #if count > num

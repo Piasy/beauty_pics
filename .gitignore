@@ -1,6 +1,7 @@
 imgs/*
 tags
 test.rb
+*.swp
 
 *.gem
 *.rbc

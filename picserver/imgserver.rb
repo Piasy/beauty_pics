@@ -5,7 +5,7 @@ require 'json'
 
 set :bind, '0.0.0.0'
 set :port, 13427
-set :public_folder, File.dirname('./imgs')
+set :public_folder, File.dirname('./public')
 
 db = Mongo::Connection.new.db("mydb")
 coll = db.collection("imgserver")

@@ -3,29 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <title>Beauties</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container-fluid" id = "pic-water-fall"></div>
+
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script type="application/javascript">
-	function getData(url, callback){
+	function getData(url, callback) {
 		var request = new XMLHttpRequest();
 		request.open("GET", url);
-		request.onreadystatechange = function(){
-			if (request.readyState === 4 && request.status === 200){
+		request.onreadystatechange = function() {
+			if (request.readyState === 4 && request.status === 200) {
 				callback(request.responseText);
 			}
 		};
 		request.send();
 	}
 
-	getData("/api?start=0&num=5", function(data){
-		document.write(data);
+	getData("/api?start=0&num=20", function(data) {
+		//document.write(data);
+		data = JSON.parse(data);
+		var pics = document.getElementById("pic-water-fall");
+		var row = document.createElement("div");
+		row.setAttribute("class", "row");
+		var col = document.createElement("div");
+		col.setAttribute("class", "col-md-3");
+		for (var i = 0; i < 5; i ++) {
+			var row_copy = row.cloneNode();
+			for (var j = 0; j < 4; j ++) {
+				var col_copy = col.cloneNode();
+				var link = document.createElement("a");
+				link.setAttribute("href", "javascript:void(0)");
+				var img = document.createElement("img");
+				img.setAttribute("class", "img-responsive");
+				img.setAttribute("src", data[i * 4 + j].pics[0].url);
+				img.setAttribute("alt", data[i * 4 + j].title);
+				link.appendChild(img);
+				col_copy.appendChild(link);
+				row_copy.appendChild(col_copy);	
+			}
+			pics.appendChild(row_copy);
+		}
 	});
 </script>
-</head>
-<body>
-	
-</body>
-
-<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</body>
 </html>
 

@@ -12,7 +12,8 @@ coll = db.collection("imgserver")
 
 get '/api' do
   params = request.env['rack.request.query_hash']
-  if params['start'] == nil || params['num'] == nil
+  if params['start'] == nil \
+    || params['num'] == nil 
     return "NOT ENOUGH PARAMS!"
   end
 
@@ -31,5 +32,9 @@ get '/api' do
     doc = res.next
     ret << {"title" => doc['title'], "pics" => doc['pics']}
   }
-  return ret.to_json
+  if params['callback'] == nil
+    return ret.to_json
+  else
+    return params['callback'] +"(" + ret.to_json + ");"
+  end
 end

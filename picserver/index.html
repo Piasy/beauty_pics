@@ -6,10 +6,80 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<style type="text/css">
+	.pic-water-fall {
+		z-index: 999
+	}
+	.mod-img {
+		min-height:150px;
+		margin-bottom:15px;
+		margin-right:15px;
+		border-radius:2px;
+		position:relative;
+		background:#fff;
+		box-shadow:0 1px 2px 0 rgba(210,210,210,.31);
+		-webkit-box-shadow:0 1px 2px 0 rgba(180,180,180,.5);
+		border-top:1px solid #EEE;
+		overflow:hidden;zoom:1
+	}
+	.mod-img .img-content {
+		width:100%;
+		position:relative
+	}
+	.mod-img .ext-info {
+		padding:12px;
+		line-height:20px
+	}
+	.app-preview {
+		width:100%;
+		height:100%;
+		position:absolute;
+		+zoom:1;
+		top:0;
+		left:0;
+		z-index:100
+	}
+	.app-preview-mask {
+		width:100%;
+		height:100%;
+		background-color:#000;
+		opacity:.8;
+		filter:alpha(opacity=80);
+		position:absolute
+	}
+	.app-preview-picBox {
+		position:absolute;
+		z-index:10;
+		+zoom:1;
+		-moz-user-select:none;
+		-webkit-user-select:none;
+		-khtml-user-select:none;
+		user-select:none
+	}
+	.app-preview-picBox-pic {
+		box-shadow:0 0 15px RGBA(0,0,0,.3);
+		position:absolute;
+		+zoom:1;
+		-webkit-transition:-webkit-transform .3s ease-out;
+		-moz-transition:-moz-transform .3s ease-out;
+		-ms-transition:-ms-transform .3s ease-out;
+		-o-transition:-o-transform .3s ease-out;
+		transition:transform .3s ease-out;
+		border:6px solid #fff
+	}
+</style>
+
 </head>
 <body>
 
-<div class="container-fluid" id = "pic-water-fall"></div>
+<div class = "pic-water-fall">
+	<div class="container-fluid" id = "pic-water-fall">
+	<div class="col-md-3" id = "col1"></div>
+	<div class="col-md-3" id = "col2"></div>
+	<div class="col-md-3" id = "col3"></div>
+	<div class="col-md-3" id = "col4"></div>
+	</div>
+</div>
 
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script type="application/javascript">
@@ -27,26 +97,65 @@
 	getData("/api?start=0&num=20", function(data) {
 		//document.write(data);
 		data = JSON.parse(data);
-		var pics = document.getElementById("pic-water-fall");
-		var row = document.createElement("div");
-		row.setAttribute("class", "row");
-		var col = document.createElement("div");
-		col.setAttribute("class", "col-md-3");
+		var index_i = 0, index_j = 0;
+		var full_div = document.createElement("div");
+		full_div.setAttribute("class", "app-preview");
+		var added = false;
+		var cols = new Array();
+		cols[0] = document.getElementById("col1");
+		cols[1] = document.getElementById("col2");
+		cols[2] = document.getElementById("col3");
+		cols[3] = document.getElementById("col4");
 		for (var i = 0; i < 5; i ++) {
-			var row_copy = row.cloneNode();
 			for (var j = 0; j < 4; j ++) {
-				var col_copy = col.cloneNode();
+				var mod_img = document.createElement("div");
+				mod_img.setAttribute("class", "mod-img");
+				var pic_area = document.createElement("div");
+				pic_area.setAttribute("class", "img-content");
+				pic_area.setAttribute("data-bind", "style:style;conCls:cls");
+				pic_area.setAttribute("style", "height: auto;");
 				var link = document.createElement("a");
 				link.setAttribute("href", "javascript:void(0)");
+				link.setAttribute("id", i + " " + j);
+				link.addEventListener("click", function() {
+					var ids = this.id.split(" ");
+					index_i = parseInt(ids[0]);
+					index_j = parseInt(ids[1]);
+					//this.setAttribute("class", "app-preview-mask");
+					full_div.innerHTML = "";
+					var show_div = document.createElement("div");
+					show_div.setAttribute("class", "app-preview-mask");
+					full_div.appendChild(show_div);
+					var box_div = document.createElement("div");
+					box_div.setAttribute("class", "app-preview-picBox");
+					var cur_pic = document.createElement("img");
+					cur_pic.setAttribute("src", data[index_i * 4 + index_j].pics[0].url);
+					cur_pic.setAttribute("class", "app-preview-picBox-pic");
+					box_div.appendChild(cur_pic);
+					full_div.appendChild(box_div);
+					
+					if (!added) {
+						added = true;
+						document.getElementsByTagName("body")[0].appendChild(full_div);
+					}
+
+					$("body").scrollTop(0);
+					$(window).scroll(function() {
+						$("body").scrollTop(0);
+					});
+				}, false);
 				var img = document.createElement("img");
 				img.setAttribute("class", "img-responsive");
 				img.setAttribute("src", data[i * 4 + j].pics[0].url);
 				img.setAttribute("alt", data[i * 4 + j].title);
 				link.appendChild(img);
-				col_copy.appendChild(link);
-				row_copy.appendChild(col_copy);	
+				pic_area.appendChild(link);
+				var tag_area = document.createElement("div");
+				tag_area.setAttribute("class", "ext-info");
+				mod_img.appendChild(pic_area);
+				mod_img.appendChild(tag_area);
+				cols[j].appendChild(mod_img);
 			}
-			pics.appendChild(row_copy);
 		}
 	});
 </script>

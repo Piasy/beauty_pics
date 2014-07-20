@@ -30,7 +30,11 @@ get '/api' do
   }
   num.to_i.times{
     doc = res.next
-    ret << {"title" => doc['title'], "pics" => doc['pics']}
+    pics = []
+    doc['pics'].each{|pic|
+      pics << {"url" => "/public/" + pic}
+    }
+    ret << {"title" => doc['title'], "pics" => pics}
   }
   if params['callback'] == nil
     return ret.to_json

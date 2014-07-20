@@ -38,3 +38,7 @@ get '/api' do
     return params['callback'] +"(" + ret.to_json + ");"
   end
 end
+
+get '/' do
+  send_file('index.html')
+end

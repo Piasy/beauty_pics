@@ -5,11 +5,6 @@
 <title>Beauties</title>
 <script type="application/javascript" src="http://202.127.216.22/js/jquery-2.1.0.min.js"></script>
 <script type="application/javascript">
-	/*$.getJSON("http://202.127.216.22:13427/api?start=0&num=5&callback=?",
-		function(data){
-			alert(data[0].title);
-			//document.write(data);
-		});*/
 	function getData(url, callback){
 		var request = new XMLHttpRequest();
 		request.open("GET", url);
@@ -24,9 +19,6 @@
 	getData("/api?start=0&num=5", function(data){
 		document.write(data);
 	});
-	/*if (request.status !== 200)
-		throw new Error(request.statusText);
-	document.write(request.responseText);*/
 </script>
 </head>
 <body>

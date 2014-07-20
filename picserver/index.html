@@ -10,12 +10,23 @@
 			alert(data[0].title);
 			//document.write(data);
 		});*/
-	var request = new XMLHttpRequest();
-	request.open("GET", "/api?start=0&num=5");
-	request.send();
-	if (request.status !== 200)
+	function getData(url, callback){
+		var request = new XMLHttpRequest();
+		request.open("GET", url);
+		request.onreadystatechange = function(){
+			if (request.readyState === 4 && request.status === 200){
+				callback(request.responseText);
+			}
+		};
+		request.send();
+	}
+
+	getData("/api?start=0&num=5", function(data){
+		document.write(data);
+	});
+	/*if (request.status !== 200)
 		throw new Error(request.statusText);
-	document.write(request.responseText);
+	document.write(request.responseText);*/
 </script>
 </head>
 <body>

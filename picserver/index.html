@@ -82,6 +82,8 @@
 </div>
 
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="/public/js/kibo.min.js"></script>
+<script src="/public/js/jquery.mousewheel.min.js"></script>
 <script type="application/javascript">
 	function getData(url, callback) {
 		var request = new XMLHttpRequest();
@@ -94,13 +96,22 @@
 		request.send();
 	}
 
+	$(function() {
+		$('#full-screen-display').mousewheel(function(event) {
+			console.log(event.deltaX, event.deltaY, event.deltaFactor);
+			return false;
+		});
+	});
+	
+	var k_ev = new Kibo();
+	k_ev.down('esc', function() {
+		var full_div = document.getElementById("full-screen-display");
+		full_div.parentNode.removeChild(full_div);
+	});
 	getData("/api?start=0&num=20", function(data) {
 		//document.write(data);
 		data = JSON.parse(data);
 		var index_i = 0, index_j = 0;
-		var full_div = document.createElement("div");
-		full_div.setAttribute("class", "app-preview");
-		var added = false;
 		var cols = new Array();
 		cols[0] = document.getElementById("col1");
 		cols[1] = document.getElementById("col2");
@@ -121,7 +132,10 @@
 					var ids = this.id.split(" ");
 					index_i = parseInt(ids[0]);
 					index_j = parseInt(ids[1]);
-					//this.setAttribute("class", "app-preview-mask");
+					
+					var full_div = document.createElement("div");
+					full_div.setAttribute("class", "app-preview");
+					full_div.setAttribute("id", "full-screen-display");
 					full_div.innerHTML = "";
 					var show_div = document.createElement("div");
 					show_div.setAttribute("class", "app-preview-mask");
@@ -133,16 +147,7 @@
 					cur_pic.setAttribute("class", "app-preview-picBox-pic");
 					box_div.appendChild(cur_pic);
 					full_div.appendChild(box_div);
-					
-					if (!added) {
-						added = true;
-						document.getElementsByTagName("body")[0].appendChild(full_div);
-					}
-
-					$("body").scrollTop(0);
-					$(window).scroll(function() {
-						$("body").scrollTop(0);
-					});
+					document.getElementsByTagName("body")[0].appendChild(full_div);
 				}, false);
 				var img = document.createElement("img");
 				img.setAttribute("class", "img-responsive");

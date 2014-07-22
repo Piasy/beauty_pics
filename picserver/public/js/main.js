@@ -16,21 +16,21 @@ function preload(data) {
 		for (var j = 0; j < data[i].pics.length; j ++) {
 			var img = document.createElement("img");
 			img.setAttribute("src", data[i].pics[j].url);
-			img.onload = markdown(Math.floor(i / 4) + " " + (i % 4) + " " + j, data[i].pics[j].url);
+			var str = "markdown('" + Math.floor(i / 4) + "_" + (i % 4) + "_" + j + "', '" + data[i].pics[j].url + "');";
+			img.setAttribute("onload", str);
 			preload_div.appendChild(img);
 		}
 	}
 }
 
 function markdown(class_name, src) {
-	alert(class_name);
 	if (loaded[class_name] == undefined) {
 		loaded[class_name] = 1;
 	} else if (loaded[class_name] == -1) {
 		loaded[class_name] = 1;
 		var pics = document.getElementsByClassName(class_name);
-		for (var pic in pics) {
-			pic.setAttribute("src", src);
+		for (var i = 0; i < pics.length; i ++) {
+			pics[i].setAttribute("src", src);
 		}
 	}
 }
@@ -39,7 +39,6 @@ var cur_top = 0;
 var index_i = 0, index_j = 0, index = 0;;
 var loaded = {};
 getData("/api?start=0&num=20", function(data) {
-	//document.write(data);
 	data = JSON.parse(data);
 	var cols = new Array();
 	cols[0] = document.getElementById("col1");
@@ -70,15 +69,15 @@ getData("/api?start=0&num=20", function(data) {
 				var box_div = document.createElement("div");
 				box_div.setAttribute("class", "app-preview-picBox");
 				var cur_pic = document.createElement("img");
-				if (loaded[index_i + " " + index_j + " " + index] == 1) {
+				if (loaded[index_i + "_" + index_j + "_" + index] == 1) {
 					cur_pic.setAttribute("src", data[index_i * 4 + index_j].pics[index].url);
 				} else {
 					cur_pic.setAttribute("src", "/public/imgs/loading.gif");
-					loaded[index_i + " " + index_j + " " + index] = -1;
+					loaded[index_i + "_" + index_j + "_" + index] = -1;
 				}
 				
-				cur_pic.setAttribute("class", index_i + " " + index_j + " " + index);
-				cur_pic.setAttribute("style", "position:absolute;height:100%;");
+				cur_pic.setAttribute("class", index_i + "_" + index_j + "_" + index);
+				cur_pic.setAttribute("style", "box-shadow:0 0 15px RGBA(0,0,0,.3);position:absolute;height:100%;+zoom:1;-webkit-transition:-webkit-transform .3s ease-out;-moz-transition:-moz-transform .3s ease-out;-ms-transition:-ms-transform .3s ease-out;-o-transition:-o-transform .3s ease-out;transition:transform .3s ease-out;border:6px solid #fff");
 				box_div.appendChild(cur_pic);
 				full_div.appendChild(show_div);
 				full_div.appendChild(box_div);
@@ -113,11 +112,11 @@ getData("/api?start=0&num=20", function(data) {
 						//TODO
 					}
 
-					if (loaded[index_i + " " + index_j + " " + index] == 1) {
+					if (loaded[index_i + "_" + index_j + "_" + index] == 1) {
 						cur_pic.setAttribute("src", data[index_i * 4 + index_j].pics[index].url);
 					} else {
 						cur_pic.setAttribute("src", "/public/imgs/loading.gif");
-						loaded[index_i + " " + index_j + " " + index] = -1;
+						loaded[index_i + "_" + index_j + "_" + index] = -1;
 					}
 
 					return false;
@@ -136,24 +135,24 @@ getData("/api?start=0&num=20", function(data) {
 						//TODO
 					}
 
-					if (loaded[index_i + " " + index_j + " " + index] == 1) {
+					if (loaded[index_i + "_" + index_j + "_" + index] == 1) {
 						cur_pic.setAttribute("src", data[index_i * 4 + index_j].pics[index].url);
 					} else {
 						cur_pic.setAttribute("src", "/public/imgs/loading.gif");
-						loaded[index_i + " " + index_j + " " + index] = -1;
+						loaded[index_i + "_" + index_j + "_" + index] = -1;
 					}
 
 					return false;
 				});
 			}, false);
 			var img = document.createElement("img");
-			img.setAttribute("class", i + " " + j + " 0");
+			img.setAttribute("class", i + "_" + j + "_0");
 			img.setAttribute("style", "display:block;width:100%\9;max-width:100%;height:auto;");
-			if (loaded[i + " " + j + " 0"] == 1) {
+			if (loaded[i + "_" + j + "_0"] == 1) {
 				img.setAttribute("src", data[i * 4 + j].pics[0].url);
 			} else {
 				img.setAttribute("src", "/public/imgs/loading.gif");
-				loaded[i + " " + j + " 0"] = -1;
+				loaded[i + "_" + j + "_0"] = -1;
 			}
 			img.setAttribute("alt", data[i * 4 + j].title);
 			link.appendChild(img);

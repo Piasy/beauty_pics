@@ -9,6 +9,18 @@ function getData(url, callback) {
 	request.send();
 }
 
+function preload(data) {
+	var preload_div = document.getElementById("preload-div");
+	preload_div.innerHTML = "";
+	for (var i = 0; i < data.length; i ++) {
+		for (var j = 0; j < data[i].pics.length; j ++) {
+			var img = document.createElement("img");
+			img.setAttribute("src", data[i].pics[j].url);
+			preload_div.appendChild(img);
+		}
+	}
+}
+
 var cur_top = 0;
 getData("/api?start=0&num=20", function(data) {
 	//document.write(data);
@@ -117,4 +129,6 @@ getData("/api?start=0&num=20", function(data) {
 			cols[j].appendChild(mod_img);
 		}
 	}
+
+	preload(data);
 });

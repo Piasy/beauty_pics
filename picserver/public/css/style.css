@@ -1,69 +1,73 @@
-	/*from image.baidu.com*/
-	.pic-water-fall {
-		z-index: 999
-	}
-	.mod-img {
-		min-height:150px;
-		margin-bottom:15px;
-		margin-right:15px;
-		border-radius:2px;
-		position:relative;
-		background:#fff;
-		box-shadow:0 1px 2px 0 rgba(210,210,210,.31);
-		-webkit-box-shadow:0 1px 2px 0 rgba(180,180,180,.5);
-		border-top:1px solid #EEE;
-		overflow:hidden;zoom:1
-	}
-	.mod-img .img-content {
-		width:100%;
-		position:relative
-	}
-	.mod-img .ext-info {
-		padding:12px;
-		line-height:20px
-	}
+.preload {
+	display:none;
+}
 
-	/*part from mail.163.com*/
-	.app-preview {
-		width:100%;
-		height:100%;
-		position:absolute;
-		+zoom:1;
-		top:0;
-		left:0;
-		z-index:100
-	}
-	.app-preview-mask {
-		width:100%;
-		height:100%;
-		background-color:#000;
-		opacity:.8;
-		filter:alpha(opacity=80);
-		position:absolute
-	}
-	.app-preview-picBox {
-		position:fixed;
-		left:0px;
-		right:0px;
-		margin-left:auto;
-		margin-right:auto;
-		width:100%;
-		height:100%;
-		z-index:10;
-		+zoom:1;
-		-moz-user-select:none;
-		-webkit-user-select:none;
-		-khtml-user-select:none
-	}
-	.app-preview-picBox-pic {
-		box-shadow:0 0 15px RGBA(0,0,0,.3);
-		position:absolute;
-		height:100%;
-		+zoom:1;
-		-webkit-transition:-webkit-transform .3s ease-out;
-		-moz-transition:-moz-transform .3s ease-out;
-		-ms-transition:-ms-transform .3s ease-out;
-		-o-transition:-o-transform .3s ease-out;
-		transition:transform .3s ease-out;
-		border:6px solid #fff
-	}
+/*from image.baidu.com*/
+.pic-water-fall {
+	z-index: 999
+}
+.mod-img {
+	min-height:150px;
+	margin-bottom:15px;
+	margin-right:15px;
+	border-radius:2px;
+	position:relative;
+	background:#fff;
+	box-shadow:0 1px 2px 0 rgba(210,210,210,.31);
+	-webkit-box-shadow:0 1px 2px 0 rgba(180,180,180,.5);
+	border-top:1px solid #EEE;
+	overflow:hidden;zoom:1
+}
+.mod-img .img-content {
+	width:100%;
+	position:relative
+}
+.mod-img .ext-info {
+	padding:12px;
+	line-height:20px
+}
+
+/*part from mail.163.com*/
+.app-preview {
+	width:100%;
+	height:100%;
+	position:absolute;
+	+zoom:1;
+	top:0;
+	left:0;
+	z-index:100
+}
+.app-preview-mask {
+	width:100%;
+	height:100%;
+	background-color:#000;
+	opacity:.8;
+	filter:alpha(opacity=80);
+	position:absolute
+}
+.app-preview-picBox {
+	position:fixed;
+	left:0px;
+	right:0px;
+	margin-left:auto;
+	margin-right:auto;
+	width:100%;
+	height:100%;
+	z-index:10;
+	+zoom:1;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-khtml-user-select:none
+}
+.app-preview-picBox-pic {
+	box-shadow:0 0 15px RGBA(0,0,0,.3);
+	position:absolute;
+	height:100%;
+	+zoom:1;
+	-webkit-transition:-webkit-transform .3s ease-out;
+	-moz-transition:-moz-transform .3s ease-out;
+	-ms-transition:-ms-transform .3s ease-out;
+	-o-transition:-o-transform .3s ease-out;
+	transition:transform .3s ease-out;
+	border:6px solid #fff
+}
